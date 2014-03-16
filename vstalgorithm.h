@@ -9,6 +9,7 @@
 
 #include "pluginterfaces/vst/ivstaudioprocessor.h"
 #include "pluginterfaces/vst/ivstparameterchanges.h"
+#include "pluginterfaces/vst/ivstunits.h"
 #include <functional>
 
 #if USE_XMM_INTRIN
@@ -38,6 +39,15 @@ inline void foreach (Steinberg::Vst::IParameterChanges* changes,
 inline void foreach (Steinberg::Vst::AudioBusBuffers& buffer0, 
 					 Steinberg::Vst::AudioBusBuffers& buffer1,
 					 std::function<void (Steinberg::Vst::Sample32* buffer0, Steinberg::Vst::Sample32* buffer1)>func);
+
+inline void foreach (Steinberg::Vst::IUnitInfo* unitInfo, 
+					 std::function<void (const Steinberg::Vst::UnitInfo&)>func);
+
+inline void foreach (Steinberg::Vst::IUnitInfo* unitInfo,
+					 std::function<void(const Steinberg::Vst::ProgramListInfo&)>func);
+
+inline void foreach(Steinberg::Vst::IUnitInfo* unitInfo, const Steinberg::Vst::ProgramListInfo& progListInfo,
+					std::function<void(Steinberg::Vst::String128 name)>func);
 
 inline void copy (Steinberg::Vst::AudioBusBuffers* to, 
 				  Steinberg::Vst::AudioBusBuffers* from, 

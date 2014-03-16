@@ -69,6 +69,56 @@ void foreach (Steinberg::Vst::IEventList* eventList,
 }
 
 //------------------------------------------------------------------------
+void foreach (Steinberg::Vst::IUnitInfo* unitInfo,
+			  std::function<void(const Steinberg::Vst::UnitInfo&)>func)
+{
+	if (!unitInfo)
+		return;
+
+	for (Steinberg::int32 i = 0; i < unitInfo->getUnitCount(); ++i)
+	{
+		Steinberg::Vst::UnitInfo info = { 0 };
+		if (unitInfo->getUnitInfo(i, info) != Steinberg::kResultOk)
+			continue;
+
+		func (info);
+	}
+}
+
+//------------------------------------------------------------------------
+void foreach (Steinberg::Vst::IUnitInfo* unitInfo,
+			  std::function<void(const Steinberg::Vst::ProgramListInfo&)>func)
+{
+	if (!unitInfo)
+		return;
+
+	for (Steinberg::int32 i = 0; i < unitInfo->getUnitCount(); ++i)
+	{
+		Steinberg::Vst::ProgramListInfo info = { 0 };
+		if (unitInfo->getProgramListInfo(i, info) != Steinberg::kResultOk)
+			continue;
+
+		func(info);
+	}
+}
+
+//------------------------------------------------------------------------
+void foreach (Steinberg::Vst::IUnitInfo* unitInfo, const Steinberg::Vst::ProgramListInfo& progListInfo,
+			  std::function<void(Steinberg::Vst::String128 name)>func)
+{
+	if (!unitInfo)
+		return;
+
+	for (Steinberg::int32 progIndex = 0; progIndex < progListInfo.programCount; ++progIndex)
+	{
+		Steinberg::Vst::String128 progName;
+		if (unitInfo->getProgramName (progListInfo.id, progIndex, progName) != Steinberg::kResultOk)
+			continue;
+
+		func (progName);
+	}
+}
+//------------------------------------------------------------------------
 void copy (Steinberg::Vst::AudioBusBuffers* to, 
 		   Steinberg::Vst::AudioBusBuffers* from, 
 		   Steinberg::int32 sliceSize, 
