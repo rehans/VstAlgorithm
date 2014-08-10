@@ -119,18 +119,18 @@ void foreach (Steinberg::Vst::IUnitInfo* unitInfo, const Steinberg::Vst::Program
 	}
 }
 //------------------------------------------------------------------------
-void copy (Steinberg::Vst::AudioBusBuffers* to, 
-		   Steinberg::Vst::AudioBusBuffers* from, 
+void copy (Steinberg::Vst::AudioBusBuffers* dst, 
+		   Steinberg::Vst::AudioBusBuffers* src, 
 		   Steinberg::int32 sliceSize, 
 		   Steinberg::int32 beginIndex)
 {
-	if (!to || !from)
+	if (!dst || !src)
 		return;
 
 	size_t numBytes = sliceSize * sizeof (Steinberg::Vst::Sample32);
-	for (int32_t chIdx = 0; chIdx < to->numChannels && chIdx < to->numChannels; ++chIdx)
+	for (int32_t chIdx = 0; chIdx < dst->numChannels && chIdx < dst->numChannels; ++chIdx)
 	{
-		memcpy (&to->channelBuffers32[chIdx][beginIndex], from->channelBuffers32[chIdx], numBytes);
+		memcpy (&dst->channelBuffers32[chIdx][beginIndex], src->channelBuffers32[chIdx], numBytes);
 	}
 }
 

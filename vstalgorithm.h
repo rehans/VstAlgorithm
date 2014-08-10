@@ -49,8 +49,8 @@ inline void foreach (Steinberg::Vst::IUnitInfo* unitInfo,
 inline void foreach(Steinberg::Vst::IUnitInfo* unitInfo, const Steinberg::Vst::ProgramListInfo& progListInfo,
 					std::function<void(Steinberg::Vst::String128 name)>func);
 
-inline void copy (Steinberg::Vst::AudioBusBuffers* to, 
-				  Steinberg::Vst::AudioBusBuffers* from, 
+inline void copy (Steinberg::Vst::AudioBusBuffers* dst, 
+				  Steinberg::Vst::AudioBusBuffers* src, 
 				  Steinberg::int32 sliceSize, 
 				  Steinberg::int32 beginIndex = 0);
 
