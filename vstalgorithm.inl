@@ -187,11 +187,11 @@ void foreach (Steinberg::Vst::AudioBusBuffers& buffer0,
 }
 
 //------------------------------------------------------------------------
-void mix (Steinberg::Vst::AudioBusBuffers& toAudioBuffers,
-		  Steinberg::Vst::AudioBusBuffers& fromAudioBuffers,
+void mix (Steinberg::Vst::AudioBusBuffers& dst,
+		  Steinberg::Vst::AudioBusBuffers& src,
 		  Steinberg::int32 sampleCount)
 {
-	foreach (toAudioBuffers, fromAudioBuffers, [&](Steinberg::Vst::Sample32* buffer0, Steinberg::Vst::Sample32* buffer1)
+	foreach (dst, src, [&](Steinberg::Vst::Sample32* buffer0, Steinberg::Vst::Sample32* buffer1)
 	{
 #if USE_XMM_INTRIN
 		static const Steinberg::int32 kVectorSize = 4;

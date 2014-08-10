@@ -58,8 +58,8 @@ inline void clear (Steinberg::Vst::AudioBusBuffers* audioBusBuffers,
 				   Steinberg::int32 sampleCount,
 				   Steinberg::int32 busCount = 1);
 
-inline void mix (Steinberg::Vst::AudioBusBuffers& toAudioBuffers, 
-				 Steinberg::Vst::AudioBusBuffers& fromAudioBuffers, 
+inline void mix (Steinberg::Vst::AudioBusBuffers& dst, 
+				 Steinberg::Vst::AudioBusBuffers& src, 
 				 Steinberg::int32 sampleCount);
 
 //------------------------------------------------------------------------
