@@ -20,34 +20,34 @@ namespace vstalgorithm
 {
 
 //------------------------------------------------------------------------
+template <typename T>
 inline void foreach (Steinberg::Vst::AudioBusBuffers* audioBusBuffers,
 					 Steinberg::int32 busCount,
-					 std::function<void (Steinberg::Vst::AudioBusBuffers&)> func);
+					 const T& func);
 
-inline void foreach (Steinberg::Vst::AudioBusBuffers& audioBuffer,
-					 std::function<void (Steinberg::Vst::Sample32*)>func);
+template <typename T>
+inline void foreach (Steinberg::Vst::AudioBusBuffers& audioBuffer, const T& func);
 
-inline void foreach (Steinberg::Vst::IEventList* eventList, 
-					 std::function<void (Steinberg::Vst::Event& event)>func);
+template <typename T>
+inline void foreach (Steinberg::Vst::IEventList* eventList, const T& func);
 
-inline void foreach (Steinberg::Vst::IParamValueQueue* paramQueue, 
-					 std::function<void (Steinberg::Vst::ParamID, Steinberg::int32, Steinberg::Vst::ParamValue)> func);
+template <typename T>
+inline void foreach (Steinberg::Vst::IParamValueQueue* paramQueue, const T& func);
 
-inline void foreach (Steinberg::Vst::IParameterChanges* changes, 
-					 std::function<void (Steinberg::Vst::IParamValueQueue*)> func);
+template <typename T>
+inline void foreach (Steinberg::Vst::IParameterChanges* changes, const T& func);
 
+template <typename T>
 inline void foreach (Steinberg::Vst::AudioBusBuffers& buffer0, 
 					 Steinberg::Vst::AudioBusBuffers& buffer1,
-					 std::function<void (Steinberg::Vst::Sample32* buffer0, Steinberg::Vst::Sample32* buffer1)>func);
+					 const T& func);
 
-inline void foreach (Steinberg::Vst::IUnitInfo* unitInfo, 
-					 std::function<void (const Steinberg::Vst::UnitInfo&)>func);
+template <typename T>
+inline void foreach (Steinberg::Vst::IUnitInfo* unitInfo, const T& func);
 
-inline void foreach (Steinberg::Vst::IUnitInfo* unitInfo,
-					 std::function<void(const Steinberg::Vst::ProgramListInfo&)>func);
+template <typename T>
+inline void foreach_ProgramListInfo (Steinberg::Vst::IUnitInfo* unitInfo, const T& func);
 
-inline void foreach(Steinberg::Vst::IUnitInfo* unitInfo, const Steinberg::Vst::ProgramListInfo& progListInfo,
-					std::function<void(Steinberg::Vst::String128 name)>func);
 
 inline void copy (Steinberg::Vst::AudioBusBuffers* dst, 
 				  Steinberg::Vst::AudioBusBuffers* src, 

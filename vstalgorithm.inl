@@ -3,9 +3,10 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
+template <typename T>
 void foreach (Steinberg::Vst::AudioBusBuffers* audioBusBuffers,
 			  Steinberg::int32 busCount,
-			  std::function<void (Steinberg::Vst::AudioBusBuffers&)> func)
+			  const T& func)
 {
 	if (!audioBusBuffers)
 		return;
@@ -17,8 +18,8 @@ void foreach (Steinberg::Vst::AudioBusBuffers* audioBusBuffers,
 }
 
 //------------------------------------------------------------------------
-void foreach (Steinberg::Vst::AudioBusBuffers& audioBuffer,
-			  std::function<void (Steinberg::Vst::Sample32*)>func)
+template <typename T>
+void foreach (Steinberg::Vst::AudioBusBuffers& audioBuffer, const T& func)
 {
 	for (Steinberg::int32 channelIndex = 0; channelIndex < audioBuffer.numChannels; ++channelIndex)
 	{
@@ -51,13 +52,13 @@ void clear (Steinberg::Vst::AudioBusBuffers* audioBusBuffers,
 }
 
 //------------------------------------------------------------------------
-void foreach (Steinberg::Vst::IEventList* eventList,
-			  std::function<void (Steinberg::Vst::Event& event)>func)
+template <typename T>
+void foreach (Steinberg::Vst::IEventList* eventList, const T& func)
 {
 	if (!eventList)
 		return;
 
-	Steinberg::int32 eventCount = eventList->getEventCount ();
+	auto eventCount = eventList->getEventCount ();
 	for (Steinberg::int32 eventIndex = 0; eventIndex < eventCount; ++eventIndex)
 	{
 		Steinberg::Vst::Event event = { 0 };
@@ -69,8 +70,8 @@ void foreach (Steinberg::Vst::IEventList* eventList,
 }
 
 //------------------------------------------------------------------------
-void foreach (Steinberg::Vst::IUnitInfo* unitInfo,
-			  std::function<void(const Steinberg::Vst::UnitInfo&)>func)
+template <typename T>
+void foreach (Steinberg::Vst::IUnitInfo* unitInfo, const T& func)
 {
 	if (!unitInfo)
 		return;
@@ -86,8 +87,8 @@ void foreach (Steinberg::Vst::IUnitInfo* unitInfo,
 }
 
 //------------------------------------------------------------------------
-void foreach (Steinberg::Vst::IUnitInfo* unitInfo,
-			  std::function<void(const Steinberg::Vst::ProgramListInfo&)>func)
+template <typename T>
+void foreach_ProgramListInfo (Steinberg::Vst::IUnitInfo* unitInfo, const T& func)
 {
 	if (!unitInfo)
 		return;
@@ -102,22 +103,6 @@ void foreach (Steinberg::Vst::IUnitInfo* unitInfo,
 	}
 }
 
-//------------------------------------------------------------------------
-void foreach (Steinberg::Vst::IUnitInfo* unitInfo, const Steinberg::Vst::ProgramListInfo& progListInfo,
-			  std::function<void(Steinberg::Vst::String128 name)>func)
-{
-	if (!unitInfo)
-		return;
-
-	for (Steinberg::int32 progIndex = 0; progIndex < progListInfo.programCount; ++progIndex)
-	{
-		Steinberg::Vst::String128 progName;
-		if (unitInfo->getProgramName (progListInfo.id, progIndex, progName) != Steinberg::kResultOk)
-			continue;
-
-		func (progName);
-	}
-}
 //------------------------------------------------------------------------
 void copy (Steinberg::Vst::AudioBusBuffers* dst, 
 		   Steinberg::Vst::AudioBusBuffers* src, 
@@ -135,14 +120,14 @@ void copy (Steinberg::Vst::AudioBusBuffers* dst,
 }
 
 //------------------------------------------------------------------------
-void foreach (Steinberg::Vst::IParamValueQueue* paramQueue,
-			  std::function<void (Steinberg::Vst::ParamID, Steinberg::int32, Steinberg::Vst::ParamValue)> func)
+template <typename T>
+void foreach (Steinberg::Vst::IParamValueQueue* paramQueue, const T& func)
 {
 	if (!paramQueue)
 		return;
 
-	Steinberg::Vst::ParamID paramId = paramQueue->getParameterId ();
-	Steinberg::int32 numPoints = paramQueue->getPointCount ();
+	auto paramId = paramQueue->getParameterId ();
+	auto numPoints = paramQueue->getPointCount ();
 	for (Steinberg::int32 pointIndex = 0; pointIndex < numPoints; ++pointIndex)
 	{
 		Steinberg::int32 sampleOffset = 0;
@@ -155,13 +140,13 @@ void foreach (Steinberg::Vst::IParamValueQueue* paramQueue,
 }
 
 //------------------------------------------------------------------------
-void foreach (Steinberg::Vst::IParameterChanges* changes,
-			  std::function<void (Steinberg::Vst::IParamValueQueue*)> func)
+template <typename T>
+void foreach (Steinberg::Vst::IParameterChanges* changes, const T& func)
 {
 	if (!changes)
 		return;
 
-	Steinberg::int32 paramCount = changes->getParameterCount ();
+	auto paramCount = changes->getParameterCount ();
 	for (Steinberg::int32 paramIndex = 0; paramIndex < paramCount; ++paramIndex)
 	{
 		auto paramValueQueue = changes->getParameterData (paramIndex);
@@ -173,9 +158,10 @@ void foreach (Steinberg::Vst::IParameterChanges* changes,
 }
 
 //------------------------------------------------------------------------
+template <typename T>
 void foreach (Steinberg::Vst::AudioBusBuffers& buffer0, 
 			  Steinberg::Vst::AudioBusBuffers& buffer1,
-			  std::function<void (Steinberg::Vst::Sample32* buffer0, Steinberg::Vst::Sample32* buffer1)>func)
+			  const T& func)
 {
 	if (buffer0.numChannels != buffer1.numChannels)
 		return;
