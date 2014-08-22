@@ -31,27 +31,6 @@ void foreach (Steinberg::Vst::AudioBusBuffers& audioBuffer, const T& func)
 }
 
 //------------------------------------------------------------------------
-void clear (Steinberg::Vst::AudioBusBuffers* audioBusBuffers,
-			Steinberg::int32 sampleCount,
-			Steinberg::int32 busCount)
-{
-	if (!audioBusBuffers)
-		return;
-
-	const Steinberg::int32 numBytes = sampleCount * sizeof (Steinberg::Vst::Sample32);
-	foreach (audioBusBuffers, busCount, [&](Steinberg::Vst::AudioBusBuffers& audioBuffer)
-	{
-		foreach (audioBuffer, [&](Steinberg::Vst::Sample32* channelBuffer)
-		{
-			if (!channelBuffer)
-				return;
-
-			memset (channelBuffer, 0, numBytes);
-		});
-	});
-}
-
-//------------------------------------------------------------------------
 template <typename T>
 void foreach (Steinberg::Vst::IEventList* eventList, const T& func)
 {
@@ -100,22 +79,6 @@ void foreach_ProgramListInfo (Steinberg::Vst::IUnitInfo* unitInfo, const T& func
 			continue;
 
 		func(info);
-	}
-}
-
-//------------------------------------------------------------------------
-void copy (Steinberg::Vst::AudioBusBuffers* dst, 
-		   Steinberg::Vst::AudioBusBuffers* src, 
-		   Steinberg::int32 sliceSize, 
-		   Steinberg::int32 beginIndex)
-{
-	if (!dst || !src)
-		return;
-
-	size_t numBytes = sliceSize * sizeof (Steinberg::Vst::Sample32);
-	for (int32_t chIdx = 0; chIdx < dst->numChannels && chIdx < dst->numChannels; ++chIdx)
-	{
-		memcpy (&dst->channelBuffers32[chIdx][beginIndex], src->channelBuffers32[chIdx], numBytes);
 	}
 }
 
@@ -170,6 +133,43 @@ void foreach (Steinberg::Vst::AudioBusBuffers& buffer0,
 	{
 		func (buffer0.channelBuffers32[channelIndex], buffer1.channelBuffers32[channelIndex]);
 	}
+}
+
+//------------------------------------------------------------------------
+void copy (Steinberg::Vst::AudioBusBuffers* dst, 
+		   Steinberg::Vst::AudioBusBuffers* src, 
+		   Steinberg::int32 sliceSize, 
+		   Steinberg::int32 beginIndex)
+{
+	if (!dst || !src)
+		return;
+
+	size_t numBytes = sliceSize * sizeof (Steinberg::Vst::Sample32);
+	for (int32_t chIdx = 0; chIdx < dst->numChannels && chIdx < dst->numChannels; ++chIdx)
+	{
+		memcpy (&dst->channelBuffers32[chIdx][beginIndex], src->channelBuffers32[chIdx], numBytes);
+	}
+}
+
+//------------------------------------------------------------------------
+void clear (Steinberg::Vst::AudioBusBuffers* audioBusBuffers,
+			Steinberg::int32 sampleCount,
+			Steinberg::int32 busCount)
+{
+	if (!audioBusBuffers)
+		return;
+
+	const Steinberg::int32 numBytes = sampleCount * sizeof (Steinberg::Vst::Sample32);
+	foreach (audioBusBuffers, busCount, [&](Steinberg::Vst::AudioBusBuffers& audioBuffer)
+	{
+		foreach (audioBuffer, [&](Steinberg::Vst::Sample32* channelBuffer)
+		{
+			if (!channelBuffer)
+				return;
+
+			memset (channelBuffer, 0, numBytes);
+		});
+	});
 }
 
 //------------------------------------------------------------------------
