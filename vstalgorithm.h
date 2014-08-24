@@ -10,7 +10,6 @@
 #include "pluginterfaces/vst/ivstaudioprocessor.h"
 #include "pluginterfaces/vst/ivstparameterchanges.h"
 #include "pluginterfaces/vst/ivstunits.h"
-#include <functional>
 
 #if USE_XMM_INTRIN
 #include <xmmintrin.h>
