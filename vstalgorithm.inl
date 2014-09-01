@@ -21,7 +21,7 @@ void foreach (Steinberg::Vst::AudioBusBuffers* audioBusBuffers,
 template <typename T>
 void foreach (Steinberg::Vst::AudioBusBuffers& audioBuffer, const T& func)
 {
-	for (Steinberg::int32 channelIndex = 0; channelIndex < audioBuffer.numChannels; ++channelIndex)
+	for(Steinberg::int32 channelIndex = 0; channelIndex < audioBuffer.numChannels; ++channelIndex)
 	{
 		if (!audioBuffer.channelBuffers32 [channelIndex])
 			return;
