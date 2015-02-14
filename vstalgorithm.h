@@ -45,6 +45,12 @@ template <typename T>
 inline void foreach (Steinberg::Vst::IUnitInfo* unitInfo, const T& func);
 
 template <typename T>
+inline void foreach_BusInfo (Steinberg::Vst::IComponent* component, 
+							 Steinberg::Vst::MediaType type, 
+							 Steinberg::Vst::BusDirection dir, 
+							 const T& func);
+
+template <typename T>
 inline void foreach_ProgramListInfo (Steinberg::Vst::IUnitInfo* unitInfo, const T& func);
 
 

@@ -67,6 +67,27 @@ void foreach (Steinberg::Vst::IUnitInfo* unitInfo, const T& func)
 
 //------------------------------------------------------------------------
 template <typename T>
+inline void foreach_BusInfo (Steinberg::Vst::IComponent* component,
+							 Steinberg::Vst::MediaType type,
+							 Steinberg::Vst::BusDirection dir, 
+							 const T& func)
+{
+	if (!component)
+		return;
+
+	Steinberg::int32 busCount = component->getBusCount (type, dir);
+	for (Steinberg::int32 busIdx = 0; busIdx < busCount; ++busIdx)
+	{
+		Steinberg::Vst::BusInfo info;
+		if (component->getBusInfo (type, dir, busIdx, info) != Steinberg::kResultOk)
+			continue;
+
+		func (info);
+	}
+}
+
+//------------------------------------------------------------------------
+template <typename T>
 void foreach_ProgramListInfo (Steinberg::Vst::IUnitInfo* unitInfo, const T& func)
 {
 	if (!unitInfo)
