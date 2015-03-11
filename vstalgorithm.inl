@@ -166,7 +166,7 @@ void copy (Steinberg::Vst::AudioBusBuffers* dst,
 		return;
 
 	size_t numBytes = sliceSize * sizeof (Steinberg::Vst::Sample32);
-	for (int32_t chIdx = 0; chIdx < dst->numChannels && chIdx < dst->numChannels; ++chIdx)
+	for (Steinberg::int32 chIdx = 0; chIdx < dst->numChannels && chIdx < dst->numChannels; ++chIdx)
 	{
 		memcpy (&dst->channelBuffers32[chIdx][beginIndex], src->channelBuffers32[chIdx], numBytes);
 	}
