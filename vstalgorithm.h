@@ -11,6 +11,8 @@
 #include "pluginterfaces/vst/ivstparameterchanges.h"
 #include "pluginterfaces/vst/ivstunits.h"
 
+#include <algorithm>
+
 #if USE_XMM_INTRIN
 #include <xmmintrin.h>
 #endif
