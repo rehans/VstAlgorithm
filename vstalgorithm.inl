@@ -152,7 +152,7 @@ void foreach (Steinberg::Vst::AudioBusBuffers& buffer0,
 
 	for (Steinberg::int32 channelIndex = 0; channelIndex < buffer0.numChannels; ++channelIndex)
 	{
-		func (buffer0.channelBuffers32[channelIndex], buffer1.channelBuffers32[channelIndex]);
+		func (buffer0.channelBuffers32[channelIndex], buffer1.channelBuffers32[channelIndex], channelIndex);
 	}
 }
 
@@ -198,7 +198,7 @@ void mix (Steinberg::Vst::AudioBusBuffers& dst,
 		  Steinberg::Vst::AudioBusBuffers& src,
 		  Steinberg::int32 sampleCount)
 {
-	foreach (dst, src, [&](Steinberg::Vst::Sample32* buffer0, Steinberg::Vst::Sample32* buffer1)
+	foreach (dst, src, [&](Steinberg::Vst::Sample32* buffer0, Steinberg::Vst::Sample32* buffer1, Steinberg::int32 /*channelIndex*/)
 	{
 #if USE_XMM_INTRIN
 		static const Steinberg::int32 kVectorSize = 4;
