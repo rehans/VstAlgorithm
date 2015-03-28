@@ -147,7 +147,7 @@ void foreach (Steinberg::Vst::AudioBusBuffers& buffer0,
 			  Steinberg::Vst::AudioBusBuffers& buffer1,
 			  const T& func)
 {
-	int32 numChannels = std::min (buffer0.numChannels, buffer1.numChannels);
+	Steinberg::int32 numChannels = std::min (buffer0.numChannels, buffer1.numChannels);
 
 	for (Steinberg::int32 channelIndex = 0; channelIndex < numChannels; ++channelIndex)
 	{
