@@ -171,17 +171,14 @@ inline void foreach_AudioChannel (Steinberg::Vst::AudioBusBuffers& buffer0,
 }
 
 //------------------------------------------------------------------------
-inline void copy(Steinberg::Vst::AudioBusBuffers* dst, Steinberg::Vst::AudioBusBuffers* src,
+inline void copy(Steinberg::Vst::AudioBusBuffers& dst, Steinberg::Vst::AudioBusBuffers& src,
 				 Steinberg::int32 sliceSize, Steinberg::int32 beginIndex)
 {
-	if (!dst || !src)
-		return;
-
-	Steinberg::int32 numChannels = std::min(src->numChannels, dst->numChannels);
+	Steinberg::int32 numChannels = std::min(src.numChannels, dst.numChannels);
 	size_t numBytes = sliceSize * sizeof(Steinberg::Vst::Sample32);
 	for (Steinberg::int32 chIdx = 0; chIdx < numChannels; ++chIdx)
 	{
-		memcpy(&dst->channelBuffers32[chIdx][beginIndex], src->channelBuffers32[chIdx], numBytes);
+		memcpy(&dst.channelBuffers32[chIdx][beginIndex], src.channelBuffers32[chIdx], numBytes);
 	}
 }
 
