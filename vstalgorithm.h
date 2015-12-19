@@ -22,8 +22,7 @@ namespace vstalgorithm
 
 //------------------------------------------------------------------------
 template <typename T>
-inline void foreach_AudioBus (Steinberg::Vst::AudioBusBuffers* audioBusBuffers, Steinberg::int32 busCount,
-					 const T& func)
+inline void foreach_AudioBus(Steinberg::Vst::AudioBusBuffers* audioBusBuffers, Steinberg::int32 busCount, const T& func)
 {
 	if (!audioBusBuffers)
 		return;
@@ -36,20 +35,20 @@ inline void foreach_AudioBus (Steinberg::Vst::AudioBusBuffers* audioBusBuffers, 
 
 //------------------------------------------------------------------------
 template <typename T>
-inline void foreach_AudioChannel (Steinberg::Vst::AudioBusBuffers& audioBuffer, const T& func)
+inline void foreach_AudioChannel(Steinberg::Vst::AudioBusBuffers& audioBuffer, const T& func)
 {
 	for (Steinberg::int32 channelIndex = 0; channelIndex < audioBuffer.numChannels; ++channelIndex)
 	{
 		if (!audioBuffer.channelBuffers32[channelIndex])
 			return;
 
-		func(audioBuffer.channelBuffers32[channelIndex]);
+		func(audioBuffer.channelBuffers32[channelIndex], channelIndex);
 	}
 }
 
 //------------------------------------------------------------------------
 template <typename T>
-inline void foreach_Event (Steinberg::Vst::IEventList* eventList, const T& func)
+inline void foreach_Event(Steinberg::Vst::IEventList* eventList, const T& func)
 {
 	if (!eventList)
 		return;
@@ -67,7 +66,7 @@ inline void foreach_Event (Steinberg::Vst::IEventList* eventList, const T& func)
 
 //------------------------------------------------------------------------
 template <typename T>
-inline void foreach_UnitInfo (Steinberg::Vst::IUnitInfo* unitInfo, const T& func)
+inline void foreach_UnitInfo(Steinberg::Vst::IUnitInfo* unitInfo, const T& func)
 {
 	if (!unitInfo)
 		return;
@@ -120,7 +119,7 @@ inline void foreach_ProgramListInfo(Steinberg::Vst::IUnitInfo* unitInfo, const T
 
 //------------------------------------------------------------------------
 template <typename T>
-inline void foreach_ParamValue (Steinberg::Vst::IParamValueQueue* paramQueue, const T& func)
+inline void foreach_ParamValue(Steinberg::Vst::IParamValueQueue* paramQueue, const T& func)
 {
 	if (!paramQueue)
 		return;
@@ -140,7 +139,7 @@ inline void foreach_ParamValue (Steinberg::Vst::IParamValueQueue* paramQueue, co
 
 //------------------------------------------------------------------------
 template <typename T>
-inline void foreach_ParamValueQueue (Steinberg::Vst::IParameterChanges* changes, const T& func)
+inline void foreach_ParamValueQueue(Steinberg::Vst::IParameterChanges* changes, const T& func)
 {
 	if (!changes)
 		return;
@@ -158,42 +157,39 @@ inline void foreach_ParamValueQueue (Steinberg::Vst::IParameterChanges* changes,
 
 //------------------------------------------------------------------------
 template <typename T>
-inline void foreach_AudioChannel (Steinberg::Vst::AudioBusBuffers& buffer0,
-					 Steinberg::Vst::AudioBusBuffers & buffer1, const T& func)
+inline void foreach_AudioChannel(Steinberg::Vst::AudioBusBuffers& buffer0, Steinberg::Vst::AudioBusBuffers& buffer1,
+								 const T& func)
 {
 	Steinberg::int32 numChannels = std::min(buffer0.numChannels, buffer1.numChannels);
 
 	for (Steinberg::int32 channelIndex = 0; channelIndex < numChannels; ++channelIndex)
 	{
-		func(buffer0.channelBuffers32[channelIndex], buffer1.channelBuffers32[channelIndex],
-			 channelIndex);
+		func(buffer0.channelBuffers32[channelIndex], buffer1.channelBuffers32[channelIndex], channelIndex);
 	}
 }
 
 //------------------------------------------------------------------------
-inline void copy(Steinberg::Vst::AudioBusBuffers& dst, Steinberg::Vst::AudioBusBuffers& src,
-				 Steinberg::int32 sliceSize, Steinberg::int32 beginIndex)
+inline void copy(Steinberg::Vst::AudioBusBuffers& dst, Steinberg::Vst::AudioBusBuffers& src, Steinberg::int32 sliceSize,
+				 Steinberg::int32 dstBeginIndex = 0, Steinberg::int32 srcBeginIndex = 0)
 {
 	Steinberg::int32 numChannels = std::min(src.numChannels, dst.numChannels);
 	size_t numBytes = sliceSize * sizeof(Steinberg::Vst::Sample32);
 	for (Steinberg::int32 chIdx = 0; chIdx < numChannels; ++chIdx)
 	{
-		memcpy(&dst.channelBuffers32[chIdx][beginIndex], src.channelBuffers32[chIdx], numBytes);
+		memcpy(&dst.channelBuffers32[chIdx][dstBeginIndex], &src.channelBuffers32[chIdx][srcBeginIndex], numBytes);
 	}
 }
 
 //------------------------------------------------------------------------
 inline void clear_AudioChannels(Steinberg::Vst::AudioBusBuffers* audioBusBuffers, Steinberg::int32 sampleCount,
-				  Steinberg::int32 busCount = 1)
+								Steinberg::int32 busCount = 1)
 {
 	if (!audioBusBuffers)
 		return;
 
 	const Steinberg::int32 numBytes = sampleCount * sizeof(Steinberg::Vst::Sample32);
-	foreach_AudioBus (audioBusBuffers, busCount, [&](Steinberg::Vst::AudioBusBuffers& audioBuffer)
-	{
-		foreach_AudioChannel (audioBuffer, [&](Steinberg::Vst::Sample32* channelBuffer)
-		{
+	foreach_AudioBus(audioBusBuffers, busCount, [&](Steinberg::Vst::AudioBusBuffers& audioBuffer) {
+		foreach_AudioChannel(audioBuffer, [&](Steinberg::Vst::Sample32* channelBuffer, Steinberg::int32 channelIndex) {
 			if (!channelBuffer)
 				return;
 
@@ -203,39 +199,33 @@ inline void clear_AudioChannels(Steinberg::Vst::AudioBusBuffers* audioBusBuffers
 }
 
 //------------------------------------------------------------------------
-inline void mix(Steinberg::Vst::AudioBusBuffers& dst, Steinberg::Vst::AudioBusBuffers& src,
-				Steinberg::int32 sampleCount)
+inline void mix(Steinberg::Vst::AudioBusBuffers& dst, Steinberg::Vst::AudioBusBuffers& src, Steinberg::int32 sampleCount)
 {
-	foreach_AudioChannel (
-		dst, src, [&](Steinberg::Vst::Sample32* buffer0, Steinberg::Vst::Sample32* buffer1,
-					  Steinberg::int32 /*channelIndex*/)
-		{
+	foreach_AudioChannel(dst, src, [&](Steinberg::Vst::Sample32* buffer0, Steinberg::Vst::Sample32* buffer1,
+									   Steinberg::int32 /*channelIndex*/) {
 #if USE_XMM_INTRIN
-			static const Steinberg::int32 kVectorSize = 4;
-			if ((sampleCount & (kVectorSize - 1)) ==
-				0) // fast modulo: sampleCount % kVectorSize == 0
+		static const Steinberg::int32 kVectorSize = 4;
+		if ((sampleCount & (kVectorSize - 1)) == 0) // fast modulo: sampleCount % kVectorSize == 0
+		{
+			for (Steinberg::int32 sampleIdx = 0; sampleIdx < sampleCount; sampleIdx += kVectorSize)
 			{
-				for (Steinberg::int32 sampleIdx = 0; sampleIdx < sampleCount;
-					 sampleIdx += kVectorSize)
-				{
-					_mm_store_ps(buffer0, _mm_add_ps(_mm_load_ps(buffer0), _mm_load_ps(buffer1)));
-					_mm_store_ps(buffer1, _mm_set_ps1(0.f));
+				_mm_store_ps(buffer0, _mm_add_ps(_mm_load_ps(buffer0), _mm_load_ps(buffer1)));
+				_mm_store_ps(buffer1, _mm_set_ps1(0.f));
 
-					buffer0 += kVectorSize;
-					buffer1 += kVectorSize;
-				}
+				buffer0 += kVectorSize;
+				buffer1 += kVectorSize;
 			}
-			else
+		}
+		else
 #endif
+		{
+			for (Steinberg::int32 sampleIndex = 0; sampleIndex < sampleCount; ++sampleIndex)
 			{
-				for (Steinberg::int32 sampleIndex = 0; sampleIndex < sampleCount; ++sampleIndex)
-				{
-					buffer0[sampleIndex] += buffer1[sampleIndex];
-					buffer1[sampleIndex] = 0;
-				}
+				buffer0[sampleIndex] += buffer1[sampleIndex];
+				buffer1[sampleIndex] = 0;
 			}
-		})
-		;
+		}
+	});
 }
 
 //------------------------------------------------------------------------
