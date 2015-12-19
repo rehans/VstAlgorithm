@@ -189,7 +189,7 @@ inline void clear_AudioChannels(Steinberg::Vst::AudioBusBuffers* audioBusBuffers
 
 	const Steinberg::int32 numBytes = sampleCount * sizeof(Steinberg::Vst::Sample32);
 	foreach_AudioBus(audioBusBuffers, busCount, [&](Steinberg::Vst::AudioBusBuffers& audioBuffer) {
-		foreach_AudioChannel(audioBuffer, [&](Steinberg::Vst::Sample32* channelBuffer, Steinberg::int32 channelIndex) {
+		foreach_AudioChannel(audioBuffer, [&](Steinberg::Vst::Sample32* channelBuffer, Steinberg::int32 /*channelIndex*/) {
 			if (!channelBuffer)
 				return;
 
@@ -231,7 +231,7 @@ inline void mix(Steinberg::Vst::AudioBusBuffers& dst, Steinberg::Vst::AudioBusBu
 //------------------------------------------------------------------------
 inline bool is_silent(Steinberg::Vst::AudioBusBuffers& audioBuffer, Steinberg::int32 sampleCount)
 {
-	static const float epsilon = 1e-22f; //! Is this epsilon ok???
+	static const auto epsilon = 1e-22f; //! Is this epsilon ok???
 
 	for (Steinberg::int32 channelIndex = 0; channelIndex < audioBuffer.numChannels; ++channelIndex)
 	{
@@ -240,7 +240,7 @@ inline bool is_silent(Steinberg::Vst::AudioBusBuffers& audioBuffer, Steinberg::i
 
 		for (Steinberg::int32 sampleIndex = 0; sampleIndex < sampleCount; ++sampleIndex)
 		{
-			float val = audioBuffer.channelBuffers32[channelIndex][sampleIndex];
+			auto val = audioBuffer.channelBuffers32[channelIndex][sampleIndex];
 			if (fabsf(val) > epsilon)
 				return false;
 		}
