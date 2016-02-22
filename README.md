@@ -6,7 +6,9 @@ The VST3 interface declares an IParamValueQueue interface. With this interface t
 
 Iterating over all changes of a parameter can be done as follows:
 ```
-vstalgorithm::foreach_ParamValue(paramValueQueue, [&](Vst::ParamID paramId, int32 sampleOffset, Vst::ParamValue value) {
+vstalgorithm::foreach_ParamValue(paramValueQueue, [](Vst::ParamID paramId, 
+													int32 sampleOffset, 
+													Vst::ParamValue value) {
 	// Do sth here
 });
 ```
